@@ -223,7 +223,7 @@
 
     .filters {
       display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
+      grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
       gap: 12px;
       align-items: end;
     }
@@ -469,7 +469,7 @@
     </section>
 
     <section class="panel">
-      <h2 class="panel-title">Поиск и фильтры</h2>
+      <h2 class="panel-title">Поиск, фильтры и сортировка</h2>
       <div class="filters">
         <div class="form-group">
           <label for="search">Поиск</label>
@@ -507,6 +507,15 @@
             <option value="высокий">Высокий</option>
           </select>
         </div>
+        <div class="form-group">
+          <label for="sortBy">Сортировка</label>
+          <select id="sortBy">
+            <option value="date-desc">Дата: сначала новые</option>
+            <option value="date-asc">Дата: сначала старые</option>
+            <option value="priority-desc">Приоритет: сначала высокий</option>
+            <option value="priority-asc">Приоритет: сначала низкий</option>
+          </select>
+        </div>
       </div>
     </section>
 
@@ -533,6 +542,9 @@
   <script>
     const STORAGE_KEY = 'kopilka-idei';
     const THEME_KEY = 'kopilka-idei-theme';
+    const SORT_KEY = 'kopilka-idei-sort';
+
+    const PRIORITY_ORDER = { 'высокий': 3, 'средний': 2, 'низкий': 1 };
 
     let ideas = [];
     let editingId = null;
@@ -554,6 +566,7 @@
     const filterCategory = document.getElementById('filterCategory');
     const filterStatus = document.getElementById('filterStatus');
     const filterPriority = document.getElementById('filterPriority');
+    const sortBy = document.getElementById('sortBy');
 
     function loadIdeas() {
       try {
@@ -633,13 +646,47 @@
       return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
+    function loadSort() {
+      const saved = localStorage.getItem(SORT_KEY);
+      if (saved && sortBy.querySelector(`option[value="${saved}"]`)) {
+        sortBy.value = saved;
+      }
+    }
+
+    function saveSort() {
+      localStorage.setItem(SORT_KEY, sortBy.value);
+    }
+
+    function sortIdeas(list) {
+      const sort = sortBy.value;
+      const sorted = [...list];
+
+      sorted.sort((a, b) => {
+        if (sort.startsWith('date-')) {
+          const dateA = new Date(a.createdAt).getTime();
+          const dateB = new Date(b.createdAt).getTime();
+          return sort === 'date-desc' ? dateB - dateA : dateA - dateB;
+        }
+
+        const prioA = PRIORITY_ORDER[a.priority] || 0;
+        const prioB = PRIORITY_ORDER[b.priority] || 0;
+        if (prioA !== prioB) {
+          return sort === 'priority-desc' ? prioB - prioA : prioA - prioB;
+        }
+
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+
+      return sorted;
+    }
+
     function getFilteredIdeas() {
       const query = searchInput.value.trim().toLowerCase();
       const cat = filterCategory.value;
       const stat = filterStatus.value;
       const prio = filterPriority.value;
 
-      return ideas.filter(idea => {
+      const filtered = ideas.filter(idea => {
         if (cat && idea.category !== cat) return false;
         if (stat && idea.status !== stat) return false;
         if (prio && idea.priority !== prio) return false;
@@ -655,6 +702,8 @@
 
         return true;
       });
+
+      return sortIdeas(filtered);
     }
 
     function renderCards() {
@@ -813,8 +862,13 @@
     filterCategory.addEventListener('change', renderCards);
     filterStatus.addEventListener('change', renderCards);
     filterPriority.addEventListener('change', renderCards);
+    sortBy.addEventListener('change', () => {
+      saveSort();
+      renderCards();
+    });
 
     loadTheme();
+    loadSort();
     loadIdeas();
     renderCards();
   </script>
