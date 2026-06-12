@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Копилка идей</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --surface: #ffffff;
+      --surface-hover: #f8fafc;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-hover: #334155;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --primary: #818cf8;
+      --primary-hover: #a5b4fc;
+      --danger: #f87171;
+      --danger-hover: #fca5a5;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    header h1 span {
+      font-size: 1.5rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .theme-toggle {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: var(--text);
+      transition: background 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--surface-hover);
+    }
+
+    .stats {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-actions {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: var(--surface-hover);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      opacity: 0.85;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .btn-danger:hover {
+      background: var(--danger-hover);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      word-break: break-word;
+    }
+
+    .card-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .card-description {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      word-break: break-word;
+    }
+
+    .card-next-step {
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 0.85rem;
+    }
+
+    .card-next-step strong {
+      display: block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .badge-category { background: #e0e7ff; color: #3730a3; }
+    .badge-status-new { background: #dbeafe; color: #1e40af; }
+    .badge-status-work { background: #fef3c7; color: #92400e; }
+    .badge-status-postponed { background: #f1f5f9; color: #475569; }
+    .badge-status-done { background: #dcfce7; color: #166534; }
+    .badge-priority-low { background: #f1f5f9; color: #64748b; }
+    .badge-priority-medium { background: #ffedd5; color: #9a3412; }
+    .badge-priority-high { background: #fee2e2; color: #991b1b; }
+
+    [data-theme="dark"] .badge-category { background: #312e81; color: #c7d2fe; }
+    [data-theme="dark"] .badge-status-new { background: #1e3a5f; color: #93c5fd; }
+    [data-theme="dark"] .badge-status-work { background: #422006; color: #fcd34d; }
+    [data-theme="dark"] .badge-status-postponed { background: #334155; color: #cbd5e1; }
+    [data-theme="dark"] .badge-status-done { background: #14532d; color: #86efac; }
+    [data-theme="dark"] .badge-priority-low { background: #334155; color: #94a3b8; }
+    [data-theme="dark"] .badge-priority-medium { background: #431407; color: #fdba74; }
+    [data-theme="dark"] .badge-priority-high { background: #450a0a; color: #fca5a5; }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 24px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: var(--shadow);
+    }
+
+    .modal h3 {
+      margin-bottom: 12px;
+    }
+
+    .modal p {
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+
+      header h1 {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1><span>💡</span> Копилка идей</h1>
+        <p class="stats" id="stats">0 идей</p>
+      </div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" title="Сменить тему">🌙</button>
+      </div>
+    </header>
+
+    <section class="panel">
+      <h2 class="panel-title" id="formTitle">Добавить идею</h2>
+      <form id="ideaForm" class="form-grid">
+        <div class="form-group full-width">
+          <label for="title">Название идеи *</label>
+          <input type="text" id="title" required placeholder="Например: Онлайн-курс по фотографии">
+        </div>
+        <div class="form-group full-width">
+          <label for="description">Описание</label>
+          <textarea id="description" placeholder="Подробнее опишите вашу идею..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="category">Категория</label>
+          <select id="category">
+            <option value="бизнес">Бизнес</option>
+            <option value="сайт">Сайт</option>
+            <option value="контент">Контент</option>
+            <option value="приложение">Приложение</option>
+            <option value="обучение">Обучение</option>
+            <option value="личное">Личное</option>
+            <option value="другое">Другое</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="status">Статус</label>
+          <select id="status">
+            <option value="новая">Новая</option>
+            <option value="в работе">В работе</option>
+            <option value="отложена">Отложена</option>
+            <option value="реализована">Реализована</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="priority">Приоритет</label>
+          <select id="priority">
+            <option value="низкий">Низкий</option>
+            <option value="средний">Средний</option>
+            <option value="высокий">Высокий</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="nextStep">Следующий шаг</label>
+          <input type="text" id="nextStep" placeholder="Например: составить список функций">
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="submitBtn">Добавить идею</button>
+          <button type="button" class="btn btn-secondary hidden" id="cancelEditBtn">Отмена</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel-title">Поиск и фильтры</h2>
+      <div class="filters">
+        <div class="form-group">
+          <label for="search">Поиск</label>
+          <input type="text" id="search" placeholder="По названию, описанию или следующему шагу...">
+        </div>
+        <div class="form-group">
+          <label for="filterCategory">Категория</label>
+          <select id="filterCategory">
+            <option value="">Все</option>
+            <option value="бизнес">Бизнес</option>
+            <option value="сайт">Сайт</option>
+            <option value="контент">Контент</option>
+            <option value="приложение">Приложение</option>
+            <option value="обучение">Обучение</option>
+            <option value="личное">Личное</option>
+            <option value="другое">Другое</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filterStatus">Статус</label>
+          <select id="filterStatus">
+            <option value="">Все</option>
+            <option value="новая">Новая</option>
+            <option value="в работе">В работе</option>
+            <option value="отложена">Отложена</option>
+            <option value="реализована">Реализована</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filterPriority">Приоритет</label>
+          <select id="filterPriority">
+            <option value="">Все</option>
+            <option value="низкий">Низкий</option>
+            <option value="средний">Средний</option>
+            <option value="высокий">Высокий</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section id="cardsContainer">
+      <div class="cards-grid" id="cardsGrid"></div>
+      <div class="empty-state hidden" id="emptyState">
+        <div class="empty-state-icon">📭</div>
+        <p id="emptyText">Пока нет идей. Добавьте первую!</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+      <h3>Удалить идею?</h3>
+      <p>Вы уверены, что хотите удалить идею «<span id="deleteIdeaName"></span>»? Это действие нельзя отменить.</p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="cancelDeleteBtn">Отмена</button>
+        <button class="btn btn-danger" id="confirmDeleteBtn">Удалить</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'kopilka-idei';
+    const THEME_KEY = 'kopilka-idei-theme';
+
+    let ideas = [];
+    let editingId = null;
+    let deleteId = null;
+
+    const form = document.getElementById('ideaForm');
+    const formTitle = document.getElementById('formTitle');
+    const submitBtn = document.getElementById('submitBtn');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const cardsGrid = document.getElementById('cardsGrid');
+    const emptyState = document.getElementById('emptyState');
+    const emptyText = document.getElementById('emptyText');
+    const stats = document.getElementById('stats');
+    const deleteModal = document.getElementById('deleteModal');
+    const deleteIdeaName = document.getElementById('deleteIdeaName');
+    const themeToggle = document.getElementById('themeToggle');
+
+    const searchInput = document.getElementById('search');
+    const filterCategory = document.getElementById('filterCategory');
+    const filterStatus = document.getElementById('filterStatus');
+    const filterPriority = document.getElementById('filterPriority');
+
+    function loadIdeas() {
+      try {
+        const data = localStorage.getItem(STORAGE_KEY);
+        ideas = data ? JSON.parse(data) : [];
+      } catch {
+        ideas = [];
+      }
+    }
+
+    function saveIdeas() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
+    }
+
+    function loadTheme() {
+      const saved = localStorage.getItem(THEME_KEY);
+      if (saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeToggle.textContent = '☀️';
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        themeToggle.textContent = '🌙';
+      }
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem(THEME_KEY, 'light');
+        themeToggle.textContent = '🌙';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem(THEME_KEY, 'dark');
+        themeToggle.textContent = '☀️';
+      }
+    }
+
+    function formatDate(isoString) {
+      const date = new Date(isoString);
+      return date.toLocaleDateString('ru-RU', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function getStatusBadgeClass(status) {
+      const map = {
+        'новая': 'badge-status-new',
+        'в работе': 'badge-status-work',
+        'отложена': 'badge-status-postponed',
+        'реализована': 'badge-status-done'
+      };
+      return map[status] || 'badge-status-new';
+    }
+
+    function getPriorityBadgeClass(priority) {
+      const map = {
+        'низкий': 'badge-priority-low',
+        'средний': 'badge-priority-medium',
+        'высокий': 'badge-priority-high'
+      };
+      return map[priority] || 'badge-priority-low';
+    }
+
+    function capitalizeFirst(str) {
+      if (!str) return '';
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function getFilteredIdeas() {
+      const query = searchInput.value.trim().toLowerCase();
+      const cat = filterCategory.value;
+      const stat = filterStatus.value;
+      const prio = filterPriority.value;
+
+      return ideas.filter(idea => {
+        if (cat && idea.category !== cat) return false;
+        if (stat && idea.status !== stat) return false;
+        if (prio && idea.priority !== prio) return false;
+
+        if (query) {
+          const haystack = [
+            idea.title,
+            idea.description,
+            idea.nextStep
+          ].join(' ').toLowerCase();
+          if (!haystack.includes(query)) return false;
+        }
+
+        return true;
+      });
+    }
+
+    function renderCards() {
+      const filtered = getFilteredIdeas();
+
+      stats.textContent = `${ideas.length} ${pluralize(ideas.length, 'идея', 'идеи', 'идей')}` +
+        (filtered.length !== ideas.length ? ` · показано ${filtered.length}` : '');
+
+      if (filtered.length === 0) {
+        cardsGrid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        emptyText.textContent = ideas.length === 0
+          ? 'Пока нет идей. Добавьте первую!'
+          : 'Ничего не найдено. Попробуйте изменить фильтры или поиск.';
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+
+      cardsGrid.innerHTML = filtered.map(idea => `
+        <article class="card" data-id="${idea.id}">
+          <div class="card-header">
+            <h3 class="card-title">${escapeHtml(idea.title)}</h3>
+            <span class="card-date">${formatDate(idea.createdAt)}</span>
+          </div>
+          ${idea.description ? `<p class="card-description">${escapeHtml(idea.description)}</p>` : ''}
+          <div class="badges">
+            <span class="badge badge-category">${escapeHtml(capitalizeFirst(idea.category))}</span>
+            <span class="badge ${getStatusBadgeClass(idea.status)}">${escapeHtml(capitalizeFirst(idea.status))}</span>
+            <span class="badge ${getPriorityBadgeClass(idea.priority)}">${escapeHtml(capitalizeFirst(idea.priority))} приоритет</span>
+          </div>
+          ${idea.nextStep ? `
+            <div class="card-next-step">
+              <strong>Следующий шаг</strong>
+              ${escapeHtml(idea.nextStep)}
+            </div>
+          ` : ''}
+          <div class="card-actions">
+            <button class="btn btn-secondary btn-sm edit-btn" data-id="${idea.id}">Редактировать</button>
+            <button class="btn btn-danger btn-sm delete-btn" data-id="${idea.id}">Удалить</button>
+          </div>
+        </article>
+      `).join('');
+
+      cardsGrid.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => startEdit(btn.dataset.id));
+      });
+
+      cardsGrid.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => showDeleteModal(btn.dataset.id));
+      });
+    }
+
+    function pluralize(n, one, few, many) {
+      const mod10 = n % 10;
+      const mod100 = n % 100;
+      if (mod100 >= 11 && mod100 <= 19) return many;
+      if (mod10 === 1) return one;
+      if (mod10 >= 2 && mod10 <= 4) return few;
+      return many;
+    }
+
+    function resetForm() {
+      form.reset();
+      editingId = null;
+      formTitle.textContent = 'Добавить идею';
+      submitBtn.textContent = 'Добавить идею';
+      cancelEditBtn.classList.add('hidden');
+    }
+
+    function startEdit(id) {
+      const idea = ideas.find(i => i.id === id);
+      if (!idea) return;
+
+      editingId = id;
+      document.getElementById('title').value = idea.title;
+      document.getElementById('description').value = idea.description || '';
+      document.getElementById('category').value = idea.category;
+      document.getElementById('status').value = idea.status;
+      document.getElementById('priority').value = idea.priority;
+      document.getElementById('nextStep').value = idea.nextStep || '';
+
+      formTitle.textContent = 'Редактировать идею';
+      submitBtn.textContent = 'Сохранить изменения';
+      cancelEditBtn.classList.remove('hidden');
+
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function showDeleteModal(id) {
+      const idea = ideas.find(i => i.id === id);
+      if (!idea) return;
+
+      deleteId = id;
+      deleteIdeaName.textContent = idea.title;
+      deleteModal.classList.add('active');
+    }
+
+    function hideDeleteModal() {
+      deleteId = null;
+      deleteModal.classList.remove('active');
+    }
+
+    function confirmDelete() {
+      if (!deleteId) return;
+      ideas = ideas.filter(i => i.id !== deleteId);
+      saveIdeas();
+      hideDeleteModal();
+      if (editingId === deleteId) resetForm();
+      renderCards();
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const title = document.getElementById('title').value.trim();
+      if (!title) return;
+
+      const ideaData = {
+        title,
+        description: document.getElementById('description').value.trim(),
+        category: document.getElementById('category').value,
+        status: document.getElementById('status').value,
+        priority: document.getElementById('priority').value,
+        nextStep: document.getElementById('nextStep').value.trim()
+      };
+
+      if (editingId) {
+        const index = ideas.findIndex(i => i.id === editingId);
+        if (index !== -1) {
+          ideas[index] = { ...ideas[index], ...ideaData };
+        }
+      } else {
+        ideas.unshift({
+          id: crypto.randomUUID(),
+          ...ideaData,
+          createdAt: new Date().toISOString()
+        });
+      }
+
+      saveIdeas();
+      resetForm();
+      renderCards();
+    });
+
+    cancelEditBtn.addEventListener('click', resetForm);
+    themeToggle.addEventListener('click', toggleTheme);
+    document.getElementById('cancelDeleteBtn').addEventListener('click', hideDeleteModal);
+    document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDelete);
+
+    deleteModal.addEventListener('click', (e) => {
+      if (e.target === deleteModal) hideDeleteModal();
+    });
+
+    searchInput.addEventListener('input', renderCards);
+    filterCategory.addEventListener('change', renderCards);
+    filterStatus.addEventListener('change', renderCards);
+    filterPriority.addEventListener('change', renderCards);
+
+    loadTheme();
+    loadIdeas();
+    renderCards();
+  </script>
+</body>
+</html>
